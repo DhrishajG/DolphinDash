@@ -1,4 +1,4 @@
-import sys
+import sys, os
 
 # to take the input file and arrange the scores in appropriate lists
 def takeScore():
@@ -24,6 +24,7 @@ def calScore(arr):
         elif arr[i] == "d":
             tot += 3
     return tot
+
 
 t1_scores = []
 t2_scores = []
