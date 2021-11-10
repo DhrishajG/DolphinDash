@@ -25,20 +25,20 @@ def calScore(arr):
             tot += 3
     return tot
 
-
-t1_scores = []
-t2_scores = []
-
 f_in = sys.argv[1]
 f_out = sys.argv[2]
 
-input_file = open(f_in, "r")
-output_file = open(f_out, "w")
-takeScore()
+for in_f_name in os.listdir(f_in):
+    input_file = open(os.path.join(f_in, in_f_name), "r")
 
-tot_t1 = calScore(t1_scores)
-tot_t2 = calScore(t2_scores)
+    t1_scores = []
+    t2_scores = []
+    takeScore()
 
-output_message = str(tot_t1) + ":" + str(tot_t2)
-
-output_file.write(output_message)
+    tot_t1 = calScore(t1_scores)
+    tot_t2 = calScore(t2_scores)
+    in_f_name_arr = in_f_name.split(".")
+    out_f_name = in_f_name_arr[0] + "_d66835dg." + in_f_name_arr[1]
+    output_file = open(os.path.join(f_out, out_f_name), "w")
+    output_message = str(tot_t1) + ":" + str(tot_t2)
+    output_file.write(output_message)
