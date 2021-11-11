@@ -68,5 +68,10 @@ for in_f_name in os.listdir(f_in):
         output_message = morseDecrypt(encrypt_message)
     in_f_name_arr = in_f_name.split(".")
     out_f_name = in_f_name_arr[0] + "_d66835dg." + in_f_name_arr[1]
-    output_file = open(os.path.join(f_out, out_f_name), "w")
+    try:
+        output_file = open(os.path.join(f_out, out_f_name), "w")
+    except:
+        os.makedirs(f_out)
+        out_f_name = in_f_name_arr[0] + "_d66835dg." + in_f_name_arr[1]
+        output_file = open(os.path.join(f_out, out_f_name), "w")
     output_file.write(output_message)
