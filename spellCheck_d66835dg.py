@@ -51,6 +51,6 @@ for in_f_name in os.listdir(f_in):
         out_f_name = in_f_name_arr[0] + "_d66835dg." + in_f_name_arr[1]
         output_file = open(os.path.join(f_out, out_f_name), "w")
 
-    output_message = "d66835dg\nFormatting ###################\nNumber of upper case words changed: "+str(uc_transform)+"\nNumber of punctuations removed: "+str(rm_punc)+"\nNumber of numbers removed: "+str(rm_num)+"\nSpellchecking ###################\nNumber of words in file: "+str(len(lines))+"\nNumber of correct words in file: "+str(correctly_spelled)+"\nNumber of incorrect words in file: "+str(incorrectly_spelled)
+    output_message = "d66835dg\nFormatting ###################\nNumber of upper case words changed: "+str(uc_transform)+"\nNumber of punctuations removed: "+str(rm_punc)+"\nNumber of numbers removed: "+str(rm_num)+"\nSpellchecking ###################\nNumber of words: "+str(len(lines))+"\nNumber of correct words: "+str(correctly_spelled)+"\nNumber of incorrect words: "+str(incorrectly_spelled)
 
     output_file.write(output_message)
