@@ -14,6 +14,7 @@ for in_f_name in os.listdir(f_in):
     uc_transform = 0
     rm_punc = 0
     rm_num = 0
+    punctuations = [".",",","?","!","{","}","'",'"',"(",")","[","]",":",";","-","…","_"]
 
     words = englishWords.read().split()
     lines = input_file.readline().split()
@@ -27,9 +28,11 @@ for in_f_name in os.listdir(f_in):
             elif char.isnumeric():
                 char = ""
                 rm_num += 1
-            elif char.isalnum() != True:
+            elif char in punctuations:
                 char = ""
                 rm_punc += 1
+            elif char.isalnum() != True:
+                char = ""
             out_line += char
         lines[i] = out_line
 
