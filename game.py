@@ -2,13 +2,6 @@ from tkinter import Tk, Canvas, PhotoImage, Label
 from time import sleep
 from random import randint as rand
 
-def enemyMotion():
-    global danger
-    enemyNumber = rand(0, (len(danger)-1))
-    enemyX = 1000
-    enemyY = rand(0, 550)
-    enemy = canvas.create_image(enemyX, enemyY, image=danger[enemyNumber][0])
-
 def spaceBar(event):
     global dolphins, dolphin
     n = 0
@@ -36,6 +29,26 @@ def downKey(event):
     canvas.move(dolphin, 0, 8)
     checkCollision()
 
+def enemyMotion():
+    global danger
+    enemyNumber = rand(0, (len(danger)-1))
+    enemyX = 990
+    enemyY = rand(0, 550)
+    if danger[enemyNumber] == crab:
+        enemy = canvas.create_image(enemyX, 590, image=danger[enemyNumber][0])
+    elif danger[enemyNumber] != spikes:
+        enemy = canvas.create_image(enemyX, enemyY, image=danger[enemyNumber][0])
+    if danger[enemyNumber] != spikes:
+        n = 0
+        while n < 100:
+            for i in range(len(danger[enemyNumber])):
+                enemy_coords = canvas.coords(enemy)
+                sleep(0.1)
+                canvas.delete(enemy)
+                enemy = canvas.create_image(enemy_coords[0], enemy_coords[1], image=danger[enemyNumber][i])
+                window.update()
+            n += 1
+
 window = Tk()
 window.title("Splashy Dolphin")
 window.geometry("1280x720")
@@ -47,6 +60,11 @@ canvas.pack()
 
 text_bg = canvas.create_text(640, 680, text="S    P    L    A    S    H    Y        D    O    L    P    H    I    N", font=("Bookshelf Symbol", 40, "bold"), fill='white')
 text_fg = canvas.create_text(642, 682, text="S    P    L    A    S    H    Y        D    O    L    P    H    I    N", font=("Bookshelf Symbol", 40, "bold"), fill='red')
+
+canvas.bind("<Up>", upKey)
+canvas.bind("<Down>", downKey)
+canvas.bind("<space>", spaceBar)
+canvas.focus_set()
 
 dolphinImg = PhotoImage(file="images/dolphin/0-0.png")
 dolphin = canvas.create_image(500, 360, image=dolphinImg)
@@ -168,11 +186,8 @@ danger.append(jellyfish)
 danger.append(crab)
 danger.append(pf_danger)
 
+gameOver = False
 
-
-canvas.bind("<Up>", upKey)
-canvas.bind("<Down>", downKey)
-canvas.bind("<space>", spaceBar)
-canvas.focus_set()
+enemyMotion()
 
 window.mainloop()
