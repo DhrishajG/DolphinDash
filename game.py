@@ -1,6 +1,7 @@
 from tkinter import Tk, Canvas, PhotoImage, Label
 from time import sleep
 from random import randint as rand
+from threading import Thread
 
 def spaceBar(event):
     global dolphins, dolphin
@@ -188,6 +189,7 @@ danger.append(pf_danger)
 
 gameOver = False
 
-enemyMotion()
+enemythread=Thread(target = enemyMotion)
+enemythread.start()
 
 window.mainloop()
