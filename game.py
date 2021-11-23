@@ -3,17 +3,6 @@ from time import sleep
 from random import randint as rand
 from threading import Thread
 
-def spaceBar(event):
-    global dolphins, dolphin
-    n = 0
-    while n < 100:
-        for i in range(len(dolphins)):
-            dolphin_coords = canvas.coords(dolphin)
-            sleep(0.05)
-            canvas.delete(dolphin)
-            dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i])
-            window.update()
-        n += 1
 
 def checkCollision():
     dolphin_coords = canvas.coords(dolphin)
@@ -34,21 +23,38 @@ def enemyMotion():
     global danger
     enemyNumber = rand(0, (len(danger)-1))
     enemyX = 990
-    enemyY = rand(0, 550)
-    if danger[enemyNumber] == crab:
+    enemyY = rand(10, 550)
+    print(danger[enemyNumber])
+    if danger[enemyNumber] == crab or danger[enemyNumber] == spikes:
         enemy = canvas.create_image(enemyX, 590, image=danger[enemyNumber][0])
     elif danger[enemyNumber] != spikes:
         enemy = canvas.create_image(enemyX, enemyY, image=danger[enemyNumber][0])
-    if danger[enemyNumber] != spikes:
-        n = 0
-        while n < 100:
-            for i in range(len(danger[enemyNumber])):
-                enemy_coords = canvas.coords(enemy)
-                sleep(0.1)
-                canvas.delete(enemy)
-                enemy = canvas.create_image(enemy_coords[0], enemy_coords[1], image=danger[enemyNumber][i])
-                window.update()
-            n += 1
+    enemy_coords = canvas.coords(enemy)
+    while enemy_coords[0] > 300 :
+        for i in range(len(danger[enemyNumber])):
+            enemy_coords = canvas.coords(enemy)
+            sleep(0.1)
+            canvas.delete(enemy)
+            enemy = canvas.create_image(enemy_coords[0], enemy_coords[1], image=danger[enemyNumber][i])
+            window.update()
+            canvas.move(enemy, -20, 0)
+
+def spawnEnemy():
+    global danger, enemyNumber
+    enemyNumber = rand(0, (len(danger)-1))
+    enemyX = 990
+    enemyY = rand(10, 550)
+    sleep(2)
+    enemy_coords = canvas.coords(enemy)
+    while enemy_coords[0] > 300 :
+        enemyNumber = rand(0, (len(danger)-1))
+        enemyY = rand(10, 550)
+        if danger[enemyNumber] == crab or danger[enemyNumber] == spikes:
+            enemy = canvas.create_image(enemyX, 590, image=danger[enemyNumber][0])
+        elif danger[enemyNumber] != spikes:
+            enemy = canvas.create_image(enemyX, enemyY, image=danger[enemyNumber][0])
+    return enemy
+
 
 window = Tk()
 window.title("Splashy Dolphin")
@@ -64,7 +70,6 @@ text_fg = canvas.create_text(642, 682, text="S    P    L    A    S    H    Y    
 
 canvas.bind("<Up>", upKey)
 canvas.bind("<Down>", downKey)
-canvas.bind("<space>", spaceBar)
 canvas.focus_set()
 
 dolphinImg = PhotoImage(file="images/dolphin/0-0.png")
@@ -77,8 +82,6 @@ dolphins.append(PhotoImage(file="images/dolphin/0-3.png"))
 dolphins.append(PhotoImage(file="images/dolphin/0-4.png"))
 dolphins.append(PhotoImage(file="images/dolphin/0-5.png"))
 
-spikeImg = PhotoImage(file="images/spikes/0-0.png")
-spike = canvas.create_image(500, 590, image=spikeImg)
 spikes = []
 spikes.append(PhotoImage(file="images/spikes/0-0.png"))
 spikes.append(PhotoImage(file="images/spikes/0-2.png"))
@@ -187,9 +190,43 @@ danger.append(jellyfish)
 danger.append(crab)
 danger.append(pf_danger)
 
+t = 0
 gameOver = False
+enemies = []
+i = 0
+j = 0
+while True:
+    enemyNumber = 0
+    if i == len(dolphins)-1:
+        i = 0
+    dolphin_coords = canvas.coords(dolphin)
+    canvas.delete(dolphin)
+    dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i])
+    window.update()
+    sleep(0.05)
+    i += 1
+    if t % 60 == 0:
+        enemyNumber = rand(0, (len(danger)-1))
+        enemyX = 990
+        enemyY = rand(10, 550)
+        enemyNumber = rand(0, (len(danger)-1))
+        enemyY = rand(10, 550)
+        if danger[enemyNumber] == crab or danger[enemyNumber] == spikes:
+            enemy = canvas.create_image(enemyX, 590, image=danger[enemyNumber][0])
+            enemies.append(enemy)
+        elif danger[enemyNumber] != spikes:
+            enemy = canvas.create_image(enemyX, enemyY, image=danger[enemyNumber][0])
+            enemies.append(enemy)
+    if len(enemies) != 0:
+        for a in range(len(enemies)):
+            canvas.move(enemies[a], -6, 0)
+            enemy_coords = canvas.coords(enemies[a])
+            if enemy_coords[0] < 300:
+                canvas.delete(enemies[a])
+                enemies.remove(enemies[a])
+                break
+    t += 1
+    window.update()
 
-enemythread=Thread(target = enemyMotion)
-enemythread.start()
 
 window.mainloop()
