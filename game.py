@@ -14,7 +14,7 @@ def checkCollision():
     dolphin_coords = canvas.coords(dolphin)
     if dolphin_coords[1] == 24.0:
         canvas.move(dolphin, 0, 8)
-    elif dolphin_coords[1] == 576.0:
+    elif dolphin_coords[1] == 584.0:
         canvas.move(dolphin, 0, -8)
 
 def upKey(event):
@@ -32,6 +32,12 @@ def pause(event):
         motion()
     elif isPause == False:
         isPause = True
+
+def turtleCheat(event):
+    global turtlee, isTurtle, turtle
+    turtlee = canvas.create_image(990, 570, image=turtle[0], anchor = 'n')
+    isTurtle.append(turtlee)
+    isTurtle.append(0)
 
 def motion():
     global t, isPause, enemies, fish_arr, i, j, gameOver, dolphin, dolphins, spikes, crab, danger, lives, score
@@ -81,6 +87,7 @@ def motion():
                     break
                 if overlapping(dolphin, enemies[a]):
                     lives -= 1
+                    print(lives)
         if len(fish_arr) != 0:
             for a in range(0, len(fish_arr)):
                 canvas.move(fish_arr[a], -20, 0)
@@ -95,6 +102,25 @@ def motion():
                     canvas.delete(fish_arr[a])
                     del fish_arr[a]
                     a -= 1
+                    break
+        if len(isTurtle) != 0:
+            for a in range(0, len(isTurtle), 2):
+                canvas.move(isTurtle[a], -10, 0)
+                turtle_coords = canvas.coords(isTurtle[a])
+                if isTurtle[a+1] == (len(turtle)-1):
+                    isTurtle[a+1] = 0
+                canvas.delete(isTurtle[a])
+                isTurtle[a] = canvas.create_image(turtle_coords[0], turtle_coords[1], image=turtle[isTurtle[a+1]], anchor = 'n')
+                if turtle_coords[0] < 280:
+                    canvas.delete(isTurtle[a])
+                    del isTurtle[0:2]
+                    a -= 2
+                    break
+                if overlapping(dolphin, isTurtle[a]):
+                    lives += 1
+                    canvas.delete(isTurtle[a])
+                    del isTurtle[0:2]
+                    a -= 2
                     break
         t += 1
         window.update()
@@ -114,6 +140,7 @@ text_fg = canvas.create_text(642, 682, text="D    O    L    P    H    I    N    
 canvas.bind("<Up>", upKey)
 canvas.bind("<Down>", downKey)
 canvas.bind("<space>", pause)
+canvas.bind("<t>", turtleCheat)
 canvas.focus_set()
 
 dolphinImg = PhotoImage(file="images/dolphin/0-0.png")
@@ -162,6 +189,9 @@ crab.append(PhotoImage(file="images/crab/0-0.png"))
 crab.append(PhotoImage(file="images/crab/0-1.png"))
 
 turtle = []
+turtleImg = PhotoImage(file="images/unused-turtle/0-0.png")
+turtlee = canvas.create_image(990, 500, image=turtleImg, anchor = 'n')
+canvas.delete(turtlee)
 turtle.append(PhotoImage(file="images/unused-turtle/0-0.png"))
 turtle.append(PhotoImage(file="images/unused-turtle/0-1.png"))
 turtle.append(PhotoImage(file="images/unused-turtle/0-2.png"))
@@ -237,6 +267,7 @@ j = 0
 score = 0
 lives = 3
 
+isTurtle = []
 
 motion()
 window.mainloop()
