@@ -84,9 +84,6 @@ dolphins.append(PhotoImage(file="images/dolphin/0-5.png"))
 
 spikes = []
 spikes.append(PhotoImage(file="images/spikes/0-0.png"))
-spikes.append(PhotoImage(file="images/spikes/0-2.png"))
-spikes.append(PhotoImage(file="images/spikes/0-4.png"))
-spikes.append(PhotoImage(file="images/spikes/0-6.png"))
 
 shark = []
 shark.append(PhotoImage(file="images/shark/2-0.png"))
@@ -203,27 +200,36 @@ while True:
     canvas.delete(dolphin)
     dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i])
     window.update()
-    sleep(0.05)
+    sleep(0.075)
     i += 1
-    if t % 60 == 0:
+    if t % 10 == 0:
         enemyNumber = rand(0, (len(danger)-1))
         enemyX = 990
-        enemyY = rand(10, 550)
+        enemyY = rand(200, 550)
         enemyNumber = rand(0, (len(danger)-1))
-        enemyY = rand(10, 550)
         if danger[enemyNumber] == crab or danger[enemyNumber] == spikes:
             enemy = canvas.create_image(enemyX, 590, image=danger[enemyNumber][0])
             enemies.append(enemy)
+            enemies.append(enemyNumber)
+            enemies.append(0)
         elif danger[enemyNumber] != spikes:
             enemy = canvas.create_image(enemyX, enemyY, image=danger[enemyNumber][0])
             enemies.append(enemy)
+            enemies.append(enemyNumber)
+            enemies.append(0)
     if len(enemies) != 0:
-        for a in range(len(enemies)):
-            canvas.move(enemies[a], -6, 0)
+        for a in range(0,len(enemies),3):
+            enemies[a+2] += 1
+            canvas.move(enemies[a], -20, 0)
+            if enemies[a+2] == len(danger[enemies[a+1]]):
+                enemies[a+2] = 0
             enemy_coords = canvas.coords(enemies[a])
+            canvas.delete(enemies[a])
+            enemies[a] = canvas.create_image(enemy_coords[0], enemy_coords[1], image=danger[enemies[a+1]][enemies[a+2]])
             if enemy_coords[0] < 300:
                 canvas.delete(enemies[a])
-                enemies.remove(enemies[a])
+                del enemies[0:3]
+                a -= 3
                 break
     t += 1
     window.update()
