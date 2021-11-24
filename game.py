@@ -25,6 +25,13 @@ def downKey(event):
     canvas.move(dolphin, 0, 8)
     checkCollision()
 
+def pause(event):
+    global isPause
+    if isPause == True:
+        isPause = False
+        motion()
+    elif isPause == False:
+        isPause = True
 
 window = Tk()
 window.title("Splashy Dolphin")
@@ -40,6 +47,7 @@ text_fg = canvas.create_text(642, 682, text="S    P    L    A    S    H    Y    
 
 canvas.bind("<Up>", upKey)
 canvas.bind("<Down>", downKey)
+canvas.bind("<space>", pause)
 canvas.focus_set()
 
 dolphinImg = PhotoImage(file="images/dolphin/0-0.png")
@@ -154,6 +162,7 @@ danger.append(pufferfish)
 
 t = 0
 gameOver = False
+isPause = False
 enemies = []
 fish_arr = []
 i = 0
@@ -162,69 +171,73 @@ j = 0
 score = 0
 lives = 3
 
-while t<1600:
-    enemyNumber = 0
-    if i == len(dolphins)-1:
-        i = 0
-    dolphin_coords = canvas.coords(dolphin)
-    canvas.delete(dolphin)
-    dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i], anchor = 'e')
-    window.update()
-    sleep(0.075)
-    i += 1
-    if t % 5 == 0:
-        fishNumber = rand(0, (len(fish)-1))
-        fishX = 990
-        fishY = rand(200, 550)
-        fishy = canvas.create_image(fishX, fishY, image=fish[fishNumber])
-        fish_arr.append(fishy)
-    if t % 5 == 0:
-        enemyNumber = rand(0, (len(danger)-1))
-        enemyX = 990
-        enemyY = rand(200, 550)
-        if danger[enemyNumber] == crab or danger[enemyNumber] == spikes:
-            enemy = canvas.create_image(enemyX, 590, image=danger[enemyNumber][0], anchor = 'n')
-            enemies.append(enemy)
-            enemies.append(enemyNumber)
-            enemies.append(0)
-        elif danger[enemyNumber] != spikes:
-            enemy = canvas.create_image(enemyX, enemyY, image=danger[enemyNumber][0], anchor = 'w')
-            enemies.append(enemy)
-            enemies.append(enemyNumber)
-            enemies.append(0)
-    if len(enemies) != 0:
-        for a in range(0,len(enemies),3):
-            enemies[a+2] += 1
-            canvas.move(enemies[a], -20, 0)
-            if enemies[a+2] == len(danger[enemies[a+1]]):
-                enemies[a+2] = 0
-            enemy_coords = canvas.coords(enemies[a])
-            canvas.delete(enemies[a])
-            enemies[a] = canvas.create_image(enemy_coords[0], enemy_coords[1], image=danger[enemies[a+1]][enemies[a+2]], anchor = 'w')
-            if enemy_coords[0] < 280:
+def motion():
+    global t, isPause, enemies, fish_arr, i, j, gameOver, dolphin, dolphins, spikes, crab, danger, lives, score
+    while isPause == False:
+        enemyNumber = 0
+        if i == len(dolphins)-1:
+            i = 0
+        dolphin_coords = canvas.coords(dolphin)
+        canvas.delete(dolphin)
+        dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i], anchor = 'e')
+        window.update()
+        sleep(0.075)
+        i += 1
+        if t % 5 == 0:
+            fishNumber = rand(0, (len(fish)-1))
+            fishX = 990
+            fishY = rand(200, 550)
+            fishy = canvas.create_image(fishX, fishY, image=fish[fishNumber])
+            fish_arr.append(fishy)
+        if t % 5 == 0:
+            enemyNumber = rand(0, (len(danger)-1))
+            enemyX = 990
+            enemyY = rand(200, 550)
+            if danger[enemyNumber] == crab or danger[enemyNumber] == spikes:
+                enemy = canvas.create_image(enemyX, 590, image=danger[enemyNumber][0], anchor = 'n')
+                enemies.append(enemy)
+                enemies.append(enemyNumber)
+                enemies.append(0)
+            elif danger[enemyNumber] != spikes:
+                enemy = canvas.create_image(enemyX, enemyY, image=danger[enemyNumber][0], anchor = 'w')
+                enemies.append(enemy)
+                enemies.append(enemyNumber)
+                enemies.append(0)
+        if len(enemies) != 0:
+            for a in range(0,len(enemies),3):
+                enemies[a+2] += 1
+                canvas.move(enemies[a], -20, 0)
+                if enemies[a+2] == len(danger[enemies[a+1]]):
+                    enemies[a+2] = 0
+                enemy_coords = canvas.coords(enemies[a])
                 canvas.delete(enemies[a])
-                del enemies[0:3]
-                a -= 3
-                break
-            if overlapping(dolphin, enemies[a]):
-                lives -= 1
-    if len(fish_arr) != 0:
-        for a in range(0, len(fish_arr)):
-            canvas.move(fish_arr[a], -20, 0)
-            fish_coords = canvas.coords(fish_arr[a])
-            if fish_coords[0] < 280:
-                canvas.delete(fish_arr[a])
-                del fish_arr[0]
-                a -= 1
-                break
-            if overlapping(fish_arr[a], dolphin):
-                score += 10
-                canvas.delete(fish_arr[a])
-                del fish_arr[a]
-                a -= 1
-                break
-    t += 1
-    window.update()
+                enemies[a] = canvas.create_image(enemy_coords[0], enemy_coords[1], image=danger[enemies[a+1]][enemies[a+2]], anchor = 'w')
+                if enemy_coords[0] < 280:
+                    canvas.delete(enemies[a])
+                    del enemies[0:3]
+                    a -= 3
+                    break
+                if overlapping(dolphin, enemies[a]):
+                    lives -= 1
+        if len(fish_arr) != 0:
+            for a in range(0, len(fish_arr)):
+                canvas.move(fish_arr[a], -20, 0)
+                fish_coords = canvas.coords(fish_arr[a])
+                if fish_coords[0] < 280:
+                    canvas.delete(fish_arr[a])
+                    del fish_arr[0]
+                    a -= 1
+                    break
+                if overlapping(fish_arr[a], dolphin):
+                    score += 10
+                    canvas.delete(fish_arr[a])
+                    del fish_arr[a]
+                    a -= 1
+                    break
+        t += 1
+        window.update()
+        motion()
 
 
+motion()
 window.mainloop()
