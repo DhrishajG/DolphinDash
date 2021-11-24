@@ -236,7 +236,6 @@ def motion():
                     break
         t += 1
         window.update()
-        motion()
 
 
 motion()
