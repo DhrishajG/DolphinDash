@@ -3,6 +3,12 @@ from time import sleep
 from random import randint as rand
 from threading import Thread
 
+def overlapping(a,b):
+    a_dim = canvas.coords(a)
+    b_dim = canvas.coords(b)
+    if a_dim[0] >= b_dim[0]-15 and a_dim[0] <= b_dim[0]+15 and a_dim[1] >= b_dim[1]-20 and a_dim[1] <=b_dim[1]+20:
+        return True
+    return False
 
 def checkCollision():
     dolphin_coords = canvas.coords(dolphin)
@@ -37,7 +43,7 @@ canvas.bind("<Down>", downKey)
 canvas.focus_set()
 
 dolphinImg = PhotoImage(file="images/dolphin/0-0.png")
-dolphin = canvas.create_image(500, 360, image=dolphinImg)
+dolphin = canvas.create_image(550, 360, image=dolphinImg, anchor = 'e')
 dolphins = []
 dolphins.append(PhotoImage(file="images/dolphin/0-0.png"))
 dolphins.append(PhotoImage(file="images/dolphin/0-1.png"))
@@ -152,13 +158,17 @@ enemies = []
 fish_arr = []
 i = 0
 j = 0
+
+score = 0
+lives = 3
+
 while t<1600:
     enemyNumber = 0
     if i == len(dolphins)-1:
         i = 0
     dolphin_coords = canvas.coords(dolphin)
     canvas.delete(dolphin)
-    dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i])
+    dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i], anchor = 'e')
     window.update()
     sleep(0.075)
     i += 1
@@ -173,12 +183,12 @@ while t<1600:
         enemyX = 990
         enemyY = rand(200, 550)
         if danger[enemyNumber] == crab or danger[enemyNumber] == spikes:
-            enemy = canvas.create_image(enemyX, 590, image=danger[enemyNumber][0])
+            enemy = canvas.create_image(enemyX, 590, image=danger[enemyNumber][0], anchor = 'n')
             enemies.append(enemy)
             enemies.append(enemyNumber)
             enemies.append(0)
         elif danger[enemyNumber] != spikes:
-            enemy = canvas.create_image(enemyX, enemyY, image=danger[enemyNumber][0])
+            enemy = canvas.create_image(enemyX, enemyY, image=danger[enemyNumber][0], anchor = 'w')
             enemies.append(enemy)
             enemies.append(enemyNumber)
             enemies.append(0)
@@ -190,19 +200,27 @@ while t<1600:
                 enemies[a+2] = 0
             enemy_coords = canvas.coords(enemies[a])
             canvas.delete(enemies[a])
-            enemies[a] = canvas.create_image(enemy_coords[0], enemy_coords[1], image=danger[enemies[a+1]][enemies[a+2]])
-            if enemy_coords[0] < 300:
+            enemies[a] = canvas.create_image(enemy_coords[0], enemy_coords[1], image=danger[enemies[a+1]][enemies[a+2]], anchor = 'w')
+            if enemy_coords[0] < 280:
                 canvas.delete(enemies[a])
                 del enemies[0:3]
                 a -= 3
                 break
+            if overlapping(dolphin, enemies[a]):
+                lives -= 1
     if len(fish_arr) != 0:
         for a in range(0, len(fish_arr)):
             canvas.move(fish_arr[a], -20, 0)
             fish_coords = canvas.coords(fish_arr[a])
-            if fish_coords[0] < 300:
+            if fish_coords[0] < 280:
                 canvas.delete(fish_arr[a])
                 del fish_arr[0]
+                a -= 1
+                break
+            if overlapping(fish_arr[a], dolphin):
+                score += 10
+                canvas.delete(fish_arr[a])
+                del fish_arr[a]
                 a -= 1
                 break
     t += 1
