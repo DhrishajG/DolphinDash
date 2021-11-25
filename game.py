@@ -1,7 +1,6 @@
-from tkinter import Tk, Canvas, PhotoImage, Label
+from tkinter import Tk, Canvas, PhotoImage, Label, Button, Text
 from time import sleep
 from random import randint as rand
-from threading import Thread
 
 def overlapping(a,b):
     a_dim = canvas.coords(a)
@@ -32,6 +31,7 @@ def pause(event):
         canvas.bind("<Up>", upKey)
         canvas.bind("<Down>", downKey)
         canvas.bind("<t>", turtleCheat)
+        canvas.bind("<i>", invisibleCheat)
         canvas.focus_set()
         motion()
     elif isPause == False:
@@ -39,6 +39,7 @@ def pause(event):
         canvas.unbind("<Up>")
         canvas.unbind("<Down>")
         canvas.unbind("<t>")
+        canvas.unbind("<i>")
         canvas.focus_set()
 
 def turtleCheat(event):
@@ -48,22 +49,24 @@ def turtleCheat(event):
     isTurtle.append(0)
 
 def bossKey(event):
-    global isPause, boss_canvas, bossImg
-    if isPause == False:
+    global isBoss, boss_canvas, bossImg
+    if isBoss == False:
         boss_canvas = canvas.create_image(640, 360, image=bossImg, anchor = 'c')
-        isPause = True
+        isBoss = True
         canvas.unbind("<Up>")
         canvas.unbind("<Down>")
         canvas.unbind("<t>")
         canvas.unbind("<space>")
+        canvas.unbind("<i>")
         canvas.focus_set()
-    elif isPause == True:
+    elif isBoss == True:
         canvas.delete(boss_canvas)
-        isPause = False
+        isBoss = False
         canvas.bind("<Up>", upKey)
         canvas.bind("<Down>", downKey)
         canvas.bind("<t>", turtleCheat)
         canvas.bind("<space>", pause)
+        canvas.bind("<i>", invisibleCheat)
         canvas.focus_set()
         motion()
 
@@ -73,9 +76,78 @@ def invisibleCheat(event):
     isInvisible = True
     iCount = 0
 
+def getUsername():
+    global username, start_button, game_text, menu, customise_button, username_textbox, submit_btn
+    canvas.delete(menu)
+    canvas.delete(game_text)
+    customise_button.destroy()
+    start_button.destroy()
+    canvas.pack()
+    username_textbox = Text(window, height=2, width=28, font="Bookshelf 20 bold")
+    username_textbox.place(x=440, y=300)
+    submit_btn = Button(window, height=2, width=26, text="start!", font="Bookshelf 20 bold", command=startGame)
+    submit_btn.place(x=440, y=400)
+
+def startGame():
+    global start_button, game_text, menu, customise_button, username_textbox, submit_btn
+    '''canvas.delete(menu)
+    canvas.delete(game_text)
+    customise_button.destroy()
+    start_button.destroy()
+    canvas.pack()'''
+    username = username_textbox.get('1.0', 'end-1c')
+    username_textbox.destroy()
+    submit_btn.destroy()
+    motion()
+
+def dolph1_set():
+    global dolphins, dolphin1
+    dolphins = dolphin1
+
+def dolph2_set():
+    global dolphins, dolphin2
+    dolphins = dolphin2
+
+def dolph3_set():
+    global dolphins, dolphin3
+    dolphins = dolphin3
+
+def cusToStart():
+    global custom_canvas, dolph3_btn, dolph2_btn, dolph1_btn, cus_to_start, custom_text, game_text, gameImg
+    custom_canvas.pack_forget()
+    dolph1_btn.destroy()
+    dolph2_btn.destroy()
+    dolph3_btn.destroy()
+    cus_to_start.destroy()
+    canvas.delete(custom_text)
+    game_text = canvas.create_image(640, 100, image=gameImg, anchor='c')
+
+def customise():
+    global dolphins, dolphin1, dolphin2, dolphin3, game_text, start_button, customise_button, custom_canvas, dolph3_btn, dolph2_btn, dolph1_btn, cus_to_start, custom_text
+    canvas.delete(game_text)
+    custom_canvas = Canvas(window, bg = "#4B0082",width = 1280, height = 720)
+    custom_canvas.pack()
+    custom_text = canvas.create_text(640, 100, text="Choose your dolphin", font="Bookshelf 30 bold", anchor='c')
+    custom_canvas.pack()
+    dolph1_btn = Button(window, text="Gary: joyful dolphin who loves his home", font="Bookshelf 20 bold", height = 2, width = 60, command=dolph1_set, anchor='c')
+    dolph1_btn.place(x=250, y=200)
+    dolph2_btn = Button(window, text="Azuki: an alien dolphin who is here to kidnap Gary", font="Bookshelf 20 bold", height = 2, width = 60, command=dolph2_set, anchor='c')
+    dolph2_btn.place(x=250, y=300)
+    dolph3_btn = Button(window, text="Suido: a stingray who is scared of Gary and thus roams the water only when Gary isn't there", height = 2, width = 60, font="Bookshelf 20 bold", command=dolph3_set, anchor='c')
+    dolph3_btn.place(x=250, y=400)
+    cus_to_start = Button(window, text="back", height=2, width = 60, font="Bookshelf 20 bold", command=cusToStart, anchor='c')
+    cus_to_start.place(x=250,y=500)
+
 def motion():
     global t, isPause, enemies, fish_arr, i, j, gameOver, dolphin, dolphins, spikes, crab, danger, lives, score, score_txt, score_display, isInvisible, iCount, livesDisplay, lives_arr, invinsibleImg, invinsibleTxt
-    while isPause == False and lives > 0:
+    canvas.bind("<Up>", upKey)
+    canvas.bind("<Down>", downKey)
+    canvas.bind("<space>", pause)
+    canvas.bind("<t>", turtleCheat)
+    canvas.bind("<b>", bossKey)
+    canvas.bind("<i>", invisibleCheat)
+    canvas.focus_set()
+    while isPause == False and lives > 0 and isBoss == False:
         enemyNumber = 0
         if i == len(dolphins)-1:
             i = 0
@@ -94,7 +166,7 @@ def motion():
             canvas.delete(dolphin)
             dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i], anchor = 'e')
         window.update()
-        sleep(0.07)
+        sleep(0.06)
         i += 1
         if t % 5 == 0:
             fishNumber = rand(0, (len(fish)-1))
@@ -220,13 +292,31 @@ canvas.focus_set()
 
 dolphinImg = PhotoImage(file="images/dolphin/0-0.png")
 dolphin = canvas.create_image(550, 360, image=dolphinImg, anchor = 'e')
-dolphins = []
-dolphins.append(PhotoImage(file="images/dolphin/0-0.png"))
-dolphins.append(PhotoImage(file="images/dolphin/0-1.png"))
-dolphins.append(PhotoImage(file="images/dolphin/0-2.png"))
-dolphins.append(PhotoImage(file="images/dolphin/0-3.png"))
-dolphins.append(PhotoImage(file="images/dolphin/0-4.png"))
-dolphins.append(PhotoImage(file="images/dolphin/0-5.png"))
+dolphin1 = []
+dolphin1.append(PhotoImage(file="images/dolphin/0-0.png"))
+dolphin1.append(PhotoImage(file="images/dolphin/0-1.png"))
+dolphin1.append(PhotoImage(file="images/dolphin/0-2.png"))
+dolphin1.append(PhotoImage(file="images/dolphin/0-3.png"))
+dolphin1.append(PhotoImage(file="images/dolphin/0-4.png"))
+dolphin1.append(PhotoImage(file="images/dolphin/0-5.png"))
+
+dolphin2 = []
+dolphin2.append(PhotoImage(file="images/trellia/1-0.png"))
+dolphin2.append(PhotoImage(file="images/trellia/1-1.png"))
+dolphin2.append(PhotoImage(file="images/trellia/1-2.png"))
+dolphin2.append(PhotoImage(file="images/trellia/1-3.png"))
+dolphin2.append(PhotoImage(file="images/trellia/1-4.png"))
+dolphin2.append(PhotoImage(file="images/trellia/1-5.png"))
+
+dolphin3 = []
+dolphin3.append(PhotoImage(file="images/stingray/1-0.png"))
+dolphin3.append(PhotoImage(file="images/stingray/1-1.png"))
+dolphin3.append(PhotoImage(file="images/stingray/1-2.png"))
+dolphin3.append(PhotoImage(file="images/stingray/1-3.png"))
+dolphin3.append(PhotoImage(file="images/stingray/1-4.png"))
+dolphin3.append(PhotoImage(file="images/stingray/1-5.png"))
+
+dolphins = dolphin1
 
 spikes = []
 spikes.append(PhotoImage(file="images/spikes/0-0.png"))
@@ -346,6 +436,7 @@ canvas.delete(boss_canvas)
 t = 0
 gameOver = False
 isPause = False
+isBoss = False
 enemies = []
 fish_arr = []
 i = 0
@@ -353,6 +444,10 @@ j = 0
 
 score = 0
 lives = 3
+
+username = ""
+username_textbox = Text(window, height=2, width=26, font="Bookshelf 20 bold")
+submit_btn = Button(window, height=2, width=26, text="start!", command=startGame)
 
 score_txt = "Score:"+str(score)
 score_display = canvas.create_text(900, 40, text=score_txt, fill="white", font=("Times New Roman", 20, "bold", "italic"))
@@ -364,6 +459,12 @@ invinsibleTxt = canvas.create_image(640, 50, image=invinsibleImg, anchor='c')
 canvas.delete(invinsibleTxt)
 
 isTurtle = []
+menu = canvas.create_rectangle(0, 0, 1280, 720, fill="#4B0082")
+gameImg  = PhotoImage(file="images/game_name.png")
+game_text = canvas.create_image(640, 100, image=gameImg, anchor='c')
+start_button = Button(window, text="new game", font="Bookshelf 20 bold", height = 2, width = 26, command=getUsername, anchor='c')
+start_button.place(x=440, y=300)
+customise_button = Button(window, text="customise", font="Bookshelf 20 bold", height=2, width=26, command=customise, anchor='c')
+customise_button.place(x=440, y=400)
 
-motion()
 window.mainloop()
