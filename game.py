@@ -68,12 +68,13 @@ def bossKey(event):
         motion()
 
 def invisibleCheat(event):
-    global isInvisible, iCount
+    global isInvisible, iCount, invinsibleImg, invinsibleTxt
+    invinsibleTxt = canvas.create_image(640, 50, image=invinsibleImg, anchor='c')
     isInvisible = True
     iCount = 0
 
 def motion():
-    global t, isPause, enemies, fish_arr, i, j, gameOver, dolphin, dolphins, spikes, crab, danger, lives, score, score_txt, score_display, lives_txt, lives_display, isInvisible, iCount, livesDisplay, lives_arr
+    global t, isPause, enemies, fish_arr, i, j, gameOver, dolphin, dolphins, spikes, crab, danger, lives, score, score_txt, score_display, isInvisible, iCount, livesDisplay, lives_arr, invinsibleImg, invinsibleTxt
     while isPause == False and lives > 0:
         enemyNumber = 0
         if i == len(dolphins)-1:
@@ -88,6 +89,7 @@ def motion():
             iCount += 1
         else:
             isInvisible = False
+            canvas.delete(invinsibleTxt)
             dolphin_coords = canvas.coords(dolphin)
             canvas.delete(dolphin)
             dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i], anchor = 'e')
@@ -155,7 +157,7 @@ def motion():
                     score += 10
                     score_txt="Score:"+str(score)
                     canvas.delete(score_display)
-                    score_display=canvas.create_text(50, 50, text=score_txt, fill="white")
+                    score_display=canvas.create_text(900, 40, text=score_txt, fill="white", font=("Times New Roman", 20, "bold", "italic"))
                     canvas.delete(fish_arr[a])
                     del fish_arr[a]
                     a -= 1
@@ -353,12 +355,13 @@ score = 0
 lives = 3
 
 score_txt = "Score:"+str(score)
-lives_txt = "Lives:"+str(lives)
-score_display = canvas.create_text(50, 50, text=score_txt, fill="white")
-lives_display = canvas.create_text(50, 100, text=lives_txt, fill="white")
+score_display = canvas.create_text(900, 40, text=score_txt, fill="white", font=("Times New Roman", 20, "bold", "italic"))
 
 iCount = 0
 isInvisible = False
+invinsibleImg = PhotoImage(file="images/invinsible.png")
+invinsibleTxt = canvas.create_image(640, 50, image=invinsibleImg, anchor='c')
+canvas.delete(invinsibleTxt)
 
 isTurtle = []
 
