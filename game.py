@@ -67,15 +67,30 @@ def bossKey(event):
         canvas.focus_set()
         motion()
 
+def invisibleCheat(event):
+    global isInvisible, iCount
+    isInvisible = True
+    iCount = 0
+
 def motion():
-    global t, isPause, enemies, fish_arr, i, j, gameOver, dolphin, dolphins, spikes, crab, danger, lives, score
+    global t, isPause, enemies, fish_arr, i, j, gameOver, dolphin, dolphins, spikes, crab, danger, lives, score, score_txt, score_display, lives_txt, lives_display, isInvisible, iCount, livesDisplay, lives_arr
     while isPause == False and lives > 0:
         enemyNumber = 0
         if i == len(dolphins)-1:
             i = 0
-        dolphin_coords = canvas.coords(dolphin)
+        '''dolphin_coords = canvas.coords(dolphin)
         canvas.delete(dolphin)
-        dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i], anchor = 'e')
+        dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i], anchor = 'e')'''
+        if isInvisible == True and iCount <= 100:
+            dolphin_coords = canvas.coords(dolphin)
+            canvas.delete(dolphin)
+            dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i], anchor = 'e')
+            iCount += 1
+        else:
+            isInvisible = False
+            dolphin_coords = canvas.coords(dolphin)
+            canvas.delete(dolphin)
+            dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i], anchor = 'e')
         window.update()
         sleep(0.07)
         i += 1
@@ -113,9 +128,20 @@ def motion():
                     del enemies[0:3]
                     a -= 3
                     break
-                if overlapping(dolphin, enemies[a]):
+                if overlapping(dolphin, enemies[a]) and isInvisible == False:
                     lives -= 1
-                    print(lives)
+                    if lives == 0:
+                        canvas.delete(livesDisplay)
+                        livesDisplay = canvas.create_image(350, 50, image=lives_arr[0])
+                    elif lives == 1:
+                        canvas.delete(livesDisplay)
+                        livesDisplay = canvas.create_image(350, 50, image=lives_arr[1])
+                    elif lives == 2:
+                        canvas.delete(livesDisplay)
+                        livesDisplay = canvas.create_image(350, 50, image=lives_arr[2])
+                    elif lives == 3:
+                        canvas.delete(livesDisplay)
+                        livesDisplay = canvas.create_image(350, 50, image=lives_arr[3])
         if len(fish_arr) != 0:
             for a in range(0, len(fish_arr)):
                 canvas.move(fish_arr[a], -20, 0)
@@ -127,7 +153,9 @@ def motion():
                     break
                 if overlapping(fish_arr[a], dolphin):
                     score += 10
-                    print(score)
+                    score_txt="Score:"+str(score)
+                    canvas.delete(score_display)
+                    score_display=canvas.create_text(50, 50, text=score_txt, fill="white")
                     canvas.delete(fish_arr[a])
                     del fish_arr[a]
                     a -= 1
@@ -142,7 +170,6 @@ def motion():
                 isTurtle[a] = canvas.create_image(turtle_coords[0], turtle_coords[1], image=turtle[isTurtle[a+1]], anchor = 'n')
                 if turtle_coords[0] < 280:
                     canvas.delete(isTurtle[a])
-                    print(score)
                     del isTurtle[0:2]
                     a -= 2
                     break
@@ -151,6 +178,20 @@ def motion():
                     canvas.delete(isTurtle[a])
                     del isTurtle[0:2]
                     a -= 2
+                    if lives > 3:
+                        lives = 3
+                    if lives == 0:
+                        canvas.delete(livesDisplay)
+                        livesDisplay = canvas.create_image(350, 50, image=lives_arr[0])
+                    elif lives == 1:
+                        canvas.delete(livesDisplay)
+                        livesDisplay = canvas.create_image(350, 50, image=lives_arr[1])
+                    elif lives == 2:
+                        canvas.delete(livesDisplay)
+                        livesDisplay = canvas.create_image(350, 50, image=lives_arr[2])
+                    elif lives == 3:
+                        canvas.delete(livesDisplay)
+                        livesDisplay = canvas.create_image(350, 50, image=lives_arr[3])
                     break
         t += 1
         window.update()
@@ -172,6 +213,7 @@ canvas.bind("<Down>", downKey)
 canvas.bind("<space>", pause)
 canvas.bind("<t>", turtleCheat)
 canvas.bind("<b>", bossKey)
+canvas.bind("<i>", invisibleCheat)
 canvas.focus_set()
 
 dolphinImg = PhotoImage(file="images/dolphin/0-0.png")
@@ -279,6 +321,13 @@ pufferfish.append(PhotoImage(file="images/pufferfish/0-2.png"))
 pufferfish.append(PhotoImage(file="images/pufferfish/0-1.png"))
 pufferfish.append(PhotoImage(file="images/pufferfish/0-0.png"))
 
+lives_arr = []
+lives_arr.append(PhotoImage(file="images/lives/0.png"))
+lives_arr.append(PhotoImage(file="images/lives/1.png"))
+lives_arr.append(PhotoImage(file="images/lives/2.png"))
+lives_arr.append(PhotoImage(file="images/lives/3.png"))
+livesDisplay = canvas.create_image(350, 50, image=lives_arr[3])
+
 danger = []
 danger.append(spikes)
 danger.append(shark)
@@ -302,6 +351,14 @@ j = 0
 
 score = 0
 lives = 3
+
+score_txt = "Score:"+str(score)
+lives_txt = "Lives:"+str(lives)
+score_display = canvas.create_text(50, 50, text=score_txt, fill="white")
+lives_display = canvas.create_text(50, 100, text=lives_txt, fill="white")
+
+iCount = 0
+isInvisible = False
 
 isTurtle = []
 
