@@ -29,9 +29,17 @@ def pause(event):
     global isPause
     if isPause == True:
         isPause = False
+        canvas.bind("<Up>", upKey)
+        canvas.bind("<Down>", downKey)
+        canvas.bind("<t>", turtleCheat)
+        canvas.focus_set()
         motion()
     elif isPause == False:
         isPause = True
+        canvas.unbind("<Up>")
+        canvas.unbind("<Down>")
+        canvas.unbind("<t>")
+        canvas.focus_set()
 
 def turtleCheat(event):
     global turtlee, isTurtle, turtle
@@ -39,9 +47,29 @@ def turtleCheat(event):
     isTurtle.append(turtlee)
     isTurtle.append(0)
 
+def bossKey(event):
+    global isPause, boss_canvas, bossImg
+    if isPause == False:
+        boss_canvas = canvas.create_image(640, 360, image=bossImg, anchor = 'c')
+        isPause = True
+        canvas.unbind("<Up>")
+        canvas.unbind("<Down>")
+        canvas.unbind("<t>")
+        canvas.unbind("<space>")
+        canvas.focus_set()
+    elif isPause == True:
+        canvas.delete(boss_canvas)
+        isPause = False
+        canvas.bind("<Up>", upKey)
+        canvas.bind("<Down>", downKey)
+        canvas.bind("<t>", turtleCheat)
+        canvas.bind("<space>", pause)
+        canvas.focus_set()
+        motion()
+
 def motion():
     global t, isPause, enemies, fish_arr, i, j, gameOver, dolphin, dolphins, spikes, crab, danger, lives, score
-    while isPause == False:
+    while isPause == False and lives > 0:
         enemyNumber = 0
         if i == len(dolphins)-1:
             i = 0
@@ -49,7 +77,7 @@ def motion():
         canvas.delete(dolphin)
         dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i], anchor = 'e')
         window.update()
-        sleep(0.075)
+        sleep(0.07)
         i += 1
         if t % 5 == 0:
             fishNumber = rand(0, (len(fish)-1))
@@ -99,6 +127,7 @@ def motion():
                     break
                 if overlapping(fish_arr[a], dolphin):
                     score += 10
+                    print(score)
                     canvas.delete(fish_arr[a])
                     del fish_arr[a]
                     a -= 1
@@ -113,6 +142,7 @@ def motion():
                 isTurtle[a] = canvas.create_image(turtle_coords[0], turtle_coords[1], image=turtle[isTurtle[a+1]], anchor = 'n')
                 if turtle_coords[0] < 280:
                     canvas.delete(isTurtle[a])
+                    print(score)
                     del isTurtle[0:2]
                     a -= 2
                     break
@@ -141,6 +171,7 @@ canvas.bind("<Up>", upKey)
 canvas.bind("<Down>", downKey)
 canvas.bind("<space>", pause)
 canvas.bind("<t>", turtleCheat)
+canvas.bind("<b>", bossKey)
 canvas.focus_set()
 
 dolphinImg = PhotoImage(file="images/dolphin/0-0.png")
@@ -192,6 +223,7 @@ turtle = []
 turtleImg = PhotoImage(file="images/unused-turtle/0-0.png")
 turtlee = canvas.create_image(990, 500, image=turtleImg, anchor = 'n')
 canvas.delete(turtlee)
+
 turtle.append(PhotoImage(file="images/unused-turtle/0-0.png"))
 turtle.append(PhotoImage(file="images/unused-turtle/0-1.png"))
 turtle.append(PhotoImage(file="images/unused-turtle/0-2.png"))
@@ -255,6 +287,10 @@ danger.append(ph_jelly)
 danger.append(jellyfish)
 danger.append(crab)
 danger.append(pufferfish)
+
+bossImg = PhotoImage(file="images/bosskey.png")
+boss_canvas = canvas.create_image(640, 360, image=bossImg, anchor = 'c')
+canvas.delete(boss_canvas)
 
 t = 0
 gameOver = False
