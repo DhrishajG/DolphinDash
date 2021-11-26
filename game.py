@@ -33,8 +33,44 @@ def menuMain():
     customise_button = Button(window, text="customise", font="Bookshelf 20 bold", height=2, width=26, command=customise, anchor='c')
     customise_button.place(x=440, y=400)
 
+def game_over():
+    global isRestart, restart_btn, t, gameOver, isPause, isBoss, isRestart, i, j, score, lives, dolphin, dolphinImg, enemies, fish_arr, isTurtle, gameOver_btn, gameover, livesDisplay, lives_arr, score_txt, score_display
+    canvas.delete(gameover)
+    gameOver = False
+    isPause = False
+    isBoss = False
+    gameOver_btn.destroy()
+    isRestart = False
+    t = 0
+    i = 0
+    j = 0
+    score = 0
+    lives = 3
+    canvas.delete(score_display)
+    canvas.delete(livesDisplay)
+    score_txt = "Score:"+str(score)
+    score_display = canvas.create_text(900, 40, text=score_txt, fill="white", font=("Times New Roman", 20, "bold", "italic"))
+    livesDisplay = canvas.create_image(350, 50, image=lives_arr[3])
+    canvas.delete(dolphin)
+    dolphin = canvas.create_image(550, 360, image=dolphinImg, anchor = 'e')
+    if len(enemies) != 0:
+        for a in range(0,len(enemies),3):
+            canvas.delete(enemies[a])
+    if len(fish_arr) != 0:
+        for a in range(0, len(fish_arr)):
+            canvas.delete(fish_arr[a])
+    if len(isTurtle) != 0:
+        for a in range(0, len(isTurtle), 2):
+            canvas.delete(isTurtle[a])
+    enemies.clear()
+    fish_arr.clear()
+    isTurtle.clear()
+    canvas.pack()
+    window.update()
+    menuMain()
+
 def restart():
-    global isRestart, restart_btn, t, gameOver, isPause, isBoss, isRestart, i, j, score, lives, dolphin, dolphinImg, enemies, fish_arr, isTurtle
+    global isRestart, restart_btn, t, gameOver, isPause, isBoss, isRestart, i, j, score, lives, dolphin, dolphinImg, enemies, fish_arr, isTurtle, livesDisplay, lives_arr, score_txt, score_display
     isRestart = True
     gameOver = False
     isPause = False
@@ -47,6 +83,11 @@ def restart():
     j = 0
     score = 0
     lives = 3
+    canvas.delete(score_display)
+    canvas.delete(livesDisplay)
+    score_txt = "Score:"+str(score)
+    score_display = canvas.create_text(900, 40, text=score_txt, fill="white", font=("Times New Roman", 20, "bold", "italic"))
+    livesDisplay = canvas.create_image(350, 50, image=lives_arr[3])
     canvas.delete(dolphin)
     dolphin = canvas.create_image(550, 360, image=dolphinImg, anchor = 'e')
     if len(enemies) != 0:
@@ -179,7 +220,14 @@ def customise():
     cus_to_start.place(x=250,y=500)
 
 def motion():
-    global t, isPause, enemies, fish_arr, i, j, gameOver, dolphin, dolphins, spikes, crab, danger, lives, score, score_txt, score_display, isInvisible, iCount, livesDisplay, lives_arr, invinsibleImg, invinsibleTxt
+    canvas.bind("<Up>", upKey)
+    canvas.bind("<Down>", downKey)
+    canvas.bind("<space>", pause)
+    canvas.bind("<t>", turtleCheat)
+    canvas.bind("<b>", bossKey)
+    canvas.bind("<i>", invisibleCheat)
+    canvas.focus_set()
+    global t, isPause, enemies, fish_arr, i, j, gameOver, dolphin, dolphins, spikes, crab, danger, lives, score, score_txt, score_display, isInvisible, iCount, livesDisplay, lives_arr, invinsibleImg, invinsibleTxt, gameoverImg, gameover, gameOver_btn
     canvas.bind("<Up>", upKey)
     canvas.bind("<Down>", downKey)
     canvas.bind("<space>", pause)
@@ -306,6 +354,16 @@ def motion():
                     break
         t += 1
         window.update()
+    if lives == 0:
+        gameover = canvas.create_image(640, 250, image=gameoverImg, anchor='c')
+        gameOver_btn = Button(window, text="restart", font="Bookshelf 20 bold", height=2, width=26, command=game_over, anchor='c')
+        gameOver_btn.place(x=440, y=350)
+        canvas.unbind("<Up>")
+        canvas.unbind("<Down>")
+        canvas.unbind("<t>")
+        canvas.unbind("<space>")
+        canvas.unbind("<i>")
+        canvas.focus_set()
 
 window = Tk()
 window.title("Dolphin Dash")
@@ -318,14 +376,6 @@ canvas.pack()
 
 text_bg = canvas.create_text(640, 680, text="D    O    L    P    H    I    N                       D    A    S    H", font=("Bookshelf Symbol", 40, "bold"), fill='white')
 text_fg = canvas.create_text(642, 682, text="D    O    L    P    H    I    N                       D    A    S    H", font=("Bookshelf Symbol", 40, "bold"), fill='red')
-
-canvas.bind("<Up>", upKey)
-canvas.bind("<Down>", downKey)
-canvas.bind("<space>", pause)
-canvas.bind("<t>", turtleCheat)
-canvas.bind("<b>", bossKey)
-canvas.bind("<i>", invisibleCheat)
-canvas.focus_set()
 
 dolphinImg = PhotoImage(file="images/dolphin/0-0.png")
 dolphin = canvas.create_image(550, 360, image=dolphinImg, anchor = 'e')
@@ -503,6 +553,10 @@ gameImg  = PhotoImage(file="images/game_name.png")
 start_button = Button(window, text="new game", font="Bookshelf 20 bold", height = 2, width = 26, command=getUsername, anchor='c')
 customise_button = Button(window, text="customise", font="Bookshelf 20 bold", height=2, width=26, command=customise, anchor='c')
 restart_btn = Button(window, text="restart", font="Bookshelf 20 bold", height=2, width=26, command=restart, anchor='c')
+gameoverImg = PhotoImage(file="images/gameover.png")
+gameover = canvas.create_image(640, 300, image=gameoverImg, anchor='c')
+canvas.delete(gameover)
+gameOver_btn = Button(window, text="restart", font="Bookshelf 20 bold", height=2, width=26, command=game_over, anchor='c')
 
 menuMain()
 
