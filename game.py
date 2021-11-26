@@ -25,7 +25,7 @@ def downKey(event):
     checkCollision()
 
 def menuMain():
-    global menu, gameImg, game_text, start_button, customise_button, restart_btn, resume_btn
+    global menu, gameImg, game_text, start_button, customise_button, restart_btn, resume_btn, leaderboard_btn
     menu = canvas.create_rectangle(0, 0, 1280, 720, fill="#4B0082")
     game_text = canvas.create_image(640, 100, image=gameImg, anchor='c')
     start_button = Button(window, text="new game", font="Bookshelf 20 bold", height = 2, width = 26, command=getUsername, anchor='c')
@@ -34,12 +34,17 @@ def menuMain():
     customise_button.place(x=440, y=400)
     resume_btn = Button(window, text="resume", font="Bookshelf 20 bold", height=2, width=26, command=reload, anchor='c')
     resume_btn.place(x=440, y=500)
+    leaderboard_btn = Button(window, text="leaderboard", font="Bookshelf 20 bold", height=2, width=26, command=showLeaderboard, anchor='c')
+    leaderboard_btn.place(x=440, y=600)
 
 def game_over():
-    global isRestart, restart_btn, t, gameOver, isPause, isBoss, isRestart, i, j, score, lives, dolphin, dolphinImg, enemies, fish_arr, isTurtle, gameOver_btn, gameover, livesDisplay, lives_arr, score_txt, score_display, gameProgress
+    global isRestart, restart_btn, t, gameOver, isPause, isBoss, isRestart, i, j, score, lives, dolphin, dolphinImg, enemies, fish_arr, isTurtle, gameOver_btn, gameover, livesDisplay, lives_arr, score_txt, score_display, gameProgress, leaderboard
     canvas.delete(gameover)
     gameProgress = open("db/progress.txt", "w")
     gameProgress.close()
+    leaderboard = open("db/leaderboard.txt", "a")
+    lb_txt = "\n"+str(score)+","+username
+    leaderboard.write(lb_txt)
     gameOver = False
     isPause = False
     isBoss = False
@@ -222,12 +227,13 @@ def invisibleCheat(event):
     iCount = 0
 
 def getUsername():
-    global username, start_button, game_text, menu, customise_button, username_textbox, submit_btn, resume_btn
+    global username, start_button, game_text, menu, customise_button, username_textbox, submit_btn, resume_btn, leaderboard_btn
     canvas.delete(menu)
     canvas.delete(game_text)
     customise_button.destroy()
     start_button.destroy()
     resume_btn.destroy()
+    leaderboard_btn.destroy()
     canvas.pack()
     username_textbox = Text(window, height=2, width=28, font="Bookshelf 20 bold")
     username_textbox.place(x=440, y=300)
@@ -243,7 +249,7 @@ def startGame():
     motion()
 
 def reload():
-    global username, lives, score, dolphin, dolphins, dolphin1, dolphin2, dolphin3, menu, game_text, start_button, customise_button, resume_btn, score_display, livesDisplay, lives_arr
+    global username, lives, score, dolphin, dolphins, dolphin1, dolphin2, dolphin3, menu, game_text, start_button, customise_button, resume_btn, score_display, livesDisplay, lives_arr, leaderboard_btn
     gProg = open("db/progress.txt", "r")
     data_reload = []
     lines = gProg.readlines()
@@ -269,6 +275,7 @@ def reload():
     start_button.destroy()
     customise_button.destroy()
     resume_btn.destroy()
+    leaderboard_btn.destroy()
     canvas.delete(score_display)
     canvas.delete(livesDisplay)
     score_txt = "Score:"+str(score)
@@ -460,6 +467,43 @@ def motion():
         canvas.unbind("<i>")
         canvas.focus_set()
 
+def sortList():
+    global leaderboard
+    lblist = []
+    leaderboard = open("db/leaderboard.txt", "r")
+    lines = leaderboard.readlines()
+    for line in lines:
+        if line != "\n":
+            item = line.split(",")
+            player = []
+            player.append(int(item[0].strip()))
+            player.append(item[1].strip())
+            lblist.append(player)
+    lblist.sort(reverse=True)
+    return lblist
+
+def showLeaderboard():
+    lbwindow = Tk()
+    lbwindow.title("Leader Board")
+    lbwindow.geometry("1280x720")
+    lbcanvas = Canvas(lbwindow, bg = '#4B0082',width = 1280, height = 720)
+    lbmenu = lbcanvas.create_rectangle(0, 0, 1280, 720, fill="#4B0082")
+    lbtxt = lbcanvas.create_text(640, 50, text="LEADERBOARD", font="Bookshelf 30 bold", anchor='c')
+    lbcanvas.pack()
+    lbwindow.update()
+    lb_names = sortList()
+    board = ""
+    pos = 1
+    textY = 150
+    for i in range(len(lb_names)):
+        name = lb_names[i]
+        if name[0] != "\n" and pos <= 10:
+            board = str(pos)+". "+name[1]+" - "+str(name[0])
+            lbcanvas.create_text(640, textY, text=board, font = "Bookshelf 20", anchor='c')
+            textY += 50
+            pos += 1
+    lbwindow.mainloop()
+
 window = Tk()
 window.title("Dolphin Dash")
 window.geometry("1280x720")
@@ -629,6 +673,8 @@ score = 0
 lives = 3
 
 gameProgress = open("db/progress.txt")
+leaderboard = open("db/leaderboard.txt")
+leaderboard.close()
 
 username = ""
 username_textbox = Text(window, height=2, width=26, font="Bookshelf 20 bold")
@@ -656,6 +702,7 @@ canvas.delete(gameover)
 gameOver_btn = Button(window, text="restart", font="Bookshelf 20 bold", height=2, width=26, command=game_over, anchor='c')
 saveAndQuit_btn  = Button(window, text="save & quit", font="Bookshelf 20 bold", height=2, width=26, command=saveAndQuit, anchor='c')
 resume_btn = Button(window, text="resume", font="Bookshelf 20 bold", height=2, width=26, command=reload, anchor='c')
+leaderboard_btn = Button(window, text="leaderboard", font="Bookshelf 20 bold", height=2, width=26, command=showLeaderboard, anchor='c')
 
 menuMain()
 

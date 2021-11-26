@@ -1,0 +1,7 @@
+
+90,dhrishaj
+20,yuna
+20,yasmin
+30,miki
+120,dhruv
+50,aaron
