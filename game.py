@@ -25,17 +25,21 @@ def downKey(event):
     checkCollision()
 
 def menuMain():
-    global menu, gameImg, game_text, start_button, customise_button, restart_btn
+    global menu, gameImg, game_text, start_button, customise_button, restart_btn, resume_btn
     menu = canvas.create_rectangle(0, 0, 1280, 720, fill="#4B0082")
     game_text = canvas.create_image(640, 100, image=gameImg, anchor='c')
     start_button = Button(window, text="new game", font="Bookshelf 20 bold", height = 2, width = 26, command=getUsername, anchor='c')
     start_button.place(x=440, y=300)
     customise_button = Button(window, text="customise", font="Bookshelf 20 bold", height=2, width=26, command=customise, anchor='c')
     customise_button.place(x=440, y=400)
+    resume_btn = Button(window, text="resume", font="Bookshelf 20 bold", height=2, width=26, command=reload, anchor='c')
+    resume_btn.place(x=440, y=500)
 
 def game_over():
-    global isRestart, restart_btn, t, gameOver, isPause, isBoss, isRestart, i, j, score, lives, dolphin, dolphinImg, enemies, fish_arr, isTurtle, gameOver_btn, gameover, livesDisplay, lives_arr, score_txt, score_display
+    global isRestart, restart_btn, t, gameOver, isPause, isBoss, isRestart, i, j, score, lives, dolphin, dolphinImg, enemies, fish_arr, isTurtle, gameOver_btn, gameover, livesDisplay, lives_arr, score_txt, score_display, gameProgress
     canvas.delete(gameover)
+    gameProgress = open("db/progress.txt", "w")
+    gameProgress.close()
     gameOver = False
     isPause = False
     isBoss = False
@@ -110,6 +114,7 @@ def restart():
 
 def saveAndQuit():
     global gameProgress, score, username, lives, dolphin, dolphins, dolphin1, dolphin2, dolphin3, saveAndQuit_btn, restart_btn, isRestart, restart_btn, t, gameOver, isPause, isBoss, isRestart, i, j, dolphinImg, enemies, fish_arr, isTurtle, gameOver_btn, gameover, livesDisplay, lives_arr, score_txt, score_display
+    gameProgress = open("db/progress.txt", "w")
     which_dolphin = 0
     if dolphins == dolphin1:
         which_dolphin = 1
@@ -117,9 +122,11 @@ def saveAndQuit():
         which_dolphin = 2
     elif dolphins == dolphin3:
         which_dolphin = 3
-    data = (username+"\n"+str(score)+"\n"+str(lives)+"\n"+str(which_dolphin)+"\n"+str(canvas.coords(dolphin))).split("\n")
+    dol_coords = canvas.coords(dolphin)
+    data = (username+"\n"+str(score)+"\n"+str(lives)+"\n"+str(which_dolphin)+"\n"+str(dol_coords[0])+"\n"+str(dol_coords[1])).split("\n")
     for a in range(len(data)):
-        gameProgress.write(data[a]+"\n")
+        output_str = data[a]+"\n"
+        gameProgress.write(output_str)
     gameProgress.close()
     saveAndQuit_btn.destroy()
     restart_btn.destroy()
@@ -215,11 +222,12 @@ def invisibleCheat(event):
     iCount = 0
 
 def getUsername():
-    global username, start_button, game_text, menu, customise_button, username_textbox, submit_btn
+    global username, start_button, game_text, menu, customise_button, username_textbox, submit_btn, resume_btn
     canvas.delete(menu)
     canvas.delete(game_text)
     customise_button.destroy()
     start_button.destroy()
+    resume_btn.destroy()
     canvas.pack()
     username_textbox = Text(window, height=2, width=28, font="Bookshelf 20 bold")
     username_textbox.place(x=440, y=300)
@@ -232,6 +240,40 @@ def startGame():
     username = username_textbox.get('1.0', 'end-1c')
     username_textbox.destroy()
     submit_btn.destroy()
+    motion()
+
+def reload():
+    global username, lives, score, dolphin, dolphins, dolphin1, dolphin2, dolphin3, menu, game_text, start_button, customise_button, resume_btn, score_display, livesDisplay, lives_arr
+    gProg = open("db/progress.txt", "r")
+    data_reload = []
+    lines = gProg.readlines()
+    for line in lines:
+        data_reload.append(line.strip())
+    username = data_reload[0]
+    score = int(data_reload[1])
+    lives = int(data_reload[2])
+    dolph = int(data_reload[3])
+    dolphX = float(data_reload[4])
+    dolphY = float(data_reload[5])
+    canvas.delete(dolphin)
+    dolphin_used = []
+    if dolph == 1:
+        dolphin_used = dolphin1
+    if dolph == 2:
+        dolphin_used = dolphin2
+    if dolph == 3:
+        dolphin_used = dolphin3
+    dolphin = canvas.create_image(dolphX, dolphY, image=dolphin_used[0], anchor = 'e')
+    canvas.delete(menu)
+    canvas.delete(game_text)
+    start_button.destroy()
+    customise_button.destroy()
+    resume_btn.destroy()
+    canvas.delete(score_display)
+    canvas.delete(livesDisplay)
+    score_txt = "Score:"+str(score)
+    score_display = canvas.create_text(900, 40, text=score_txt, fill="white", font=("Times New Roman", 20, "bold", "italic"))
+    livesDisplay = canvas.create_image(350, 50, image=lives_arr[lives])
     motion()
 
 def dolph1_set():
@@ -586,7 +628,7 @@ j = 0
 score = 0
 lives = 3
 
-gameProgress = open("db/progress.txt", "w")
+gameProgress = open("db/progress.txt")
 
 username = ""
 username_textbox = Text(window, height=2, width=26, font="Bookshelf 20 bold")
@@ -613,6 +655,7 @@ gameover = canvas.create_image(640, 300, image=gameoverImg, anchor='c')
 canvas.delete(gameover)
 gameOver_btn = Button(window, text="restart", font="Bookshelf 20 bold", height=2, width=26, command=game_over, anchor='c')
 saveAndQuit_btn  = Button(window, text="save & quit", font="Bookshelf 20 bold", height=2, width=26, command=saveAndQuit, anchor='c')
+resume_btn = Button(window, text="resume", font="Bookshelf 20 bold", height=2, width=26, command=reload, anchor='c')
 
 menuMain()
 
