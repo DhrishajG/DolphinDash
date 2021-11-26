@@ -310,13 +310,13 @@ def customise():
     canvas.delete(game_text)
     custom_canvas = Canvas(window, bg = "#4B0082",width = 1280, height = 720)
     custom_canvas.pack()
-    custom_text = canvas.create_text(640, 100, text="Choose your dolphin", font="Bookshelf 30 bold", anchor='c')
+    custom_text = canvas.create_text(640, 100, text="Choose your dolphin", font="Bookshelf 30 bold", fill="white", anchor='c')
     custom_canvas.pack()
     dolph1_btn = Button(window, text="Gary: joyful dolphin who loves his home", font="Bookshelf 20 bold", height = 2, width = 60, command=dolph1_set, anchor='c')
     dolph1_btn.place(x=250, y=200)
     dolph2_btn = Button(window, text="Azuki: an alien dolphin who is here to kidnap Gary", font="Bookshelf 20 bold", height = 2, width = 60, command=dolph2_set, anchor='c')
     dolph2_btn.place(x=250, y=300)
-    dolph3_btn = Button(window, text="Suido: a stingray who is scared of Gary and thus roams the water only when Gary isn't there", height = 2, width = 60, font="Bookshelf 20 bold", command=dolph3_set, anchor='c')
+    dolph3_btn = Button(window, text="Suido: a stingray who is scared of Gary", height = 2, width = 60, font="Bookshelf 20 bold", command=dolph3_set, anchor='c')
     dolph3_btn.place(x=250, y=400)
     cus_to_start = Button(window, text="back", height=2, width = 60, font="Bookshelf 20 bold", command=cusToStart, anchor='c')
     cus_to_start.place(x=250,y=500)
@@ -486,9 +486,9 @@ def showLeaderboard():
     lbwindow = Tk()
     lbwindow.title("Leader Board")
     lbwindow.geometry("1280x720")
-    lbcanvas = Canvas(lbwindow, bg = '#4B0082',width = 1280, height = 720)
+    lbcanvas = Canvas(lbwindow, bg = '#4B0082', width = 1280, height = 720)
     lbmenu = lbcanvas.create_rectangle(0, 0, 1280, 720, fill="#4B0082")
-    lbtxt = lbcanvas.create_text(640, 50, text="LEADERBOARD", font="Bookshelf 30 bold", anchor='c')
+    lbtxt = lbcanvas.create_text(640, 50, text="LEADERBOARD", font="Bookshelf 30 bold", fill="white", anchor='c')
     lbcanvas.pack()
     lbwindow.update()
     lb_names = sortList()
@@ -499,7 +499,7 @@ def showLeaderboard():
         name = lb_names[i]
         if name[0] != "\n" and pos <= 10:
             board = str(pos)+". "+name[1]+" - "+str(name[0])
-            lbcanvas.create_text(640, textY, text=board, font = "Bookshelf 20", anchor='c')
+            lbcanvas.create_text(640, textY, text=board, font = "Bookshelf 20", fill="white", anchor='c')
             textY += 50
             pos += 1
     lbwindow.mainloop()

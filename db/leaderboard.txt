@@ -5,3 +5,8 @@
 30,miki
 120,dhruv
 50,aaron
+30,frenciel
+170,frenciel
+30,arun
+90,sarina
+60,pranav
