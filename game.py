@@ -24,9 +24,52 @@ def downKey(event):
     canvas.move(dolphin, 0, 8)
     checkCollision()
 
+def menuMain():
+    global menu, gameImg, game_text, start_button, customise_button, restart_btn
+    menu = canvas.create_rectangle(0, 0, 1280, 720, fill="#4B0082")
+    game_text = canvas.create_image(640, 100, image=gameImg, anchor='c')
+    start_button = Button(window, text="new game", font="Bookshelf 20 bold", height = 2, width = 26, command=getUsername, anchor='c')
+    start_button.place(x=440, y=300)
+    customise_button = Button(window, text="customise", font="Bookshelf 20 bold", height=2, width=26, command=customise, anchor='c')
+    customise_button.place(x=440, y=400)
+
+def restart():
+    global isRestart, restart_btn, t, gameOver, isPause, isBoss, isRestart, i, j, score, lives, dolphin, dolphinImg, enemies, fish_arr, isTurtle
+    isRestart = True
+    gameOver = False
+    isPause = False
+    isBoss = False
+    restart_btn.destroy()
+    motion()
+    isRestart = False
+    t = 0
+    i = 0
+    j = 0
+    score = 0
+    lives = 3
+    canvas.delete(dolphin)
+    dolphin = canvas.create_image(550, 360, image=dolphinImg, anchor = 'e')
+    if len(enemies) != 0:
+        for a in range(0,len(enemies),3):
+            canvas.delete(enemies[a])
+    if len(fish_arr) != 0:
+        for a in range(0, len(fish_arr)):
+            canvas.delete(fish_arr[a])
+    if len(isTurtle) != 0:
+        for a in range(0, len(isTurtle), 2):
+            canvas.delete(isTurtle[a])
+    enemies.clear()
+    fish_arr.clear()
+    isTurtle.clear()
+    canvas.pack()
+    window.update()
+    isRestart = False
+    menuMain()
+
 def pause(event):
-    global isPause
+    global isPause, restart_btn
     if isPause == True:
+        restart_btn.destroy()
         isPause = False
         canvas.bind("<Up>", upKey)
         canvas.bind("<Down>", downKey)
@@ -35,6 +78,8 @@ def pause(event):
         canvas.focus_set()
         motion()
     elif isPause == False:
+        restart_btn = Button(window, text="restart", font="Bookshelf 20 bold", height=2, width=26, command=restart, anchor='c')
+        restart_btn.place(x=440, y=300)
         isPause = True
         canvas.unbind("<Up>")
         canvas.unbind("<Down>")
@@ -90,11 +135,6 @@ def getUsername():
 
 def startGame():
     global start_button, game_text, menu, customise_button, username_textbox, submit_btn
-    '''canvas.delete(menu)
-    canvas.delete(game_text)
-    customise_button.destroy()
-    start_button.destroy()
-    canvas.pack()'''
     username = username_textbox.get('1.0', 'end-1c')
     username_textbox.destroy()
     submit_btn.destroy()
@@ -147,13 +187,10 @@ def motion():
     canvas.bind("<b>", bossKey)
     canvas.bind("<i>", invisibleCheat)
     canvas.focus_set()
-    while isPause == False and lives > 0 and isBoss == False:
+    while isPause == False and lives > 0 and isBoss == False and isRestart == False:
         enemyNumber = 0
         if i == len(dolphins)-1:
             i = 0
-        '''dolphin_coords = canvas.coords(dolphin)
-        canvas.delete(dolphin)
-        dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i], anchor = 'e')'''
         if isInvisible == True and iCount <= 100:
             dolphin_coords = canvas.coords(dolphin)
             canvas.delete(dolphin)
@@ -271,7 +308,7 @@ def motion():
         window.update()
 
 window = Tk()
-window.title("Dolphin Dive")
+window.title("Dolphin Dash")
 window.geometry("1280x720")
 canvas = Canvas(window, bg = '#383838',width = 1280, height = 720)
 canvas.create_rectangle(280, 0, 1000, 720, fill="#006994")
@@ -279,8 +316,8 @@ canvas.create_rectangle(280, 600, 1000, 720, fill="#c2b280")
 canvas.create_rectangle(0, 650, 1280, 720, fill="#ffb101")
 canvas.pack()
 
-text_bg = canvas.create_text(640, 680, text="D    O    L    P    H    I    N                       D    I    V    E", font=("Bookshelf Symbol", 40, "bold"), fill='white')
-text_fg = canvas.create_text(642, 682, text="D    O    L    P    H    I    N                       D    I    V    E", font=("Bookshelf Symbol", 40, "bold"), fill='red')
+text_bg = canvas.create_text(640, 680, text="D    O    L    P    H    I    N                       D    A    S    H", font=("Bookshelf Symbol", 40, "bold"), fill='white')
+text_fg = canvas.create_text(642, 682, text="D    O    L    P    H    I    N                       D    A    S    H", font=("Bookshelf Symbol", 40, "bold"), fill='red')
 
 canvas.bind("<Up>", upKey)
 canvas.bind("<Down>", downKey)
@@ -437,6 +474,7 @@ t = 0
 gameOver = False
 isPause = False
 isBoss = False
+isRestart = False
 enemies = []
 fish_arr = []
 i = 0
@@ -460,11 +498,12 @@ canvas.delete(invinsibleTxt)
 
 isTurtle = []
 menu = canvas.create_rectangle(0, 0, 1280, 720, fill="#4B0082")
+canvas.delete(menu)
 gameImg  = PhotoImage(file="images/game_name.png")
-game_text = canvas.create_image(640, 100, image=gameImg, anchor='c')
 start_button = Button(window, text="new game", font="Bookshelf 20 bold", height = 2, width = 26, command=getUsername, anchor='c')
-start_button.place(x=440, y=300)
 customise_button = Button(window, text="customise", font="Bookshelf 20 bold", height=2, width=26, command=customise, anchor='c')
-customise_button.place(x=440, y=400)
+restart_btn = Button(window, text="restart", font="Bookshelf 20 bold", height=2, width=26, command=restart, anchor='c')
+
+menuMain()
 
 window.mainloop()
