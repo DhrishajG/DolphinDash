@@ -2,10 +2,10 @@ from tkinter import Tk, Canvas, PhotoImage, Label, Button, Text
 from time import sleep
 from random import randint as rand
 
-def overlapping(a,b):
+def overlapping(a, b):
     a_dim = canvas.coords(a)
     b_dim = canvas.coords(b)
-    if a_dim[0] >= b_dim[0]-15 and a_dim[0] <= b_dim[0]+15 and a_dim[1] >= b_dim[1]-20 and a_dim[1] <=b_dim[1]+20:
+    if a_dim[0] >= b_dim[0]-15 and a_dim[0] <= b_dim[0]+15 and a_dim[1] >= b_dim[1]-20 and a_dim[1] <= b_dim[1]+20:
         return True
     return False
 
@@ -28,7 +28,7 @@ def menuMain():
     global menu, gameImg, game_text, start_button, customise_button, restart_btn, resume_btn, leaderboard_btn
     menu = canvas.create_rectangle(0, 0, 1280, 720, fill="#4B0082")
     game_text = canvas.create_image(640, 100, image=gameImg, anchor='c')
-    start_button = Button(window, text="new game", font="Bookshelf 20 bold", height = 2, width = 26, command=getUsername, anchor='c')
+    start_button = Button(window, text="new game", font="Bookshelf 20 bold", height=2, width=26, command=getUsername, anchor='c')
     start_button.place(x=440, y=300)
     customise_button = Button(window, text="customise", font="Bookshelf 20 bold", height=2, width=26, command=customise, anchor='c')
     customise_button.place(x=440, y=400)
@@ -61,9 +61,9 @@ def game_over():
     score_display = canvas.create_text(900, 40, text=score_txt, fill="white", font=("Times New Roman", 20, "bold", "italic"))
     livesDisplay = canvas.create_image(350, 50, image=lives_arr[3])
     canvas.delete(dolphin)
-    dolphin = canvas.create_image(550, 360, image=dolphinImg, anchor = 'e')
+    dolphin = canvas.create_image(550, 360, image=dolphinImg, anchor='e')
     if len(enemies) != 0:
-        for a in range(0,len(enemies),3):
+        for a in range(0, len(enemies), 3):
             canvas.delete(enemies[a])
     if len(fish_arr) != 0:
         for a in range(0, len(fish_arr)):
@@ -151,9 +151,9 @@ def saveAndQuit():
     score_display = canvas.create_text(900, 40, text=score_txt, fill="white", font=("Times New Roman", 20, "bold", "italic"))
     livesDisplay = canvas.create_image(350, 50, image=lives_arr[3])
     canvas.delete(dolphin)
-    dolphin = canvas.create_image(550, 360, image=dolphinImg, anchor = 'e')
+    dolphin = canvas.create_image(550, 360, image=dolphinImg, anchor='e')
     if len(enemies) != 0:
-        for a in range(0,len(enemies),3):
+        for a in range(0, len(enemies), 3):
             canvas.delete(enemies[a])
     if len(fish_arr) != 0:
         for a in range(0, len(fish_arr)):
@@ -170,7 +170,7 @@ def saveAndQuit():
 
 def pause(event):
     global isPause, restart_btn, saveAndQuit_btn
-    if isPause == True:
+    if isPause is True:
         restart_btn.destroy()
         saveAndQuit_btn.destroy()
         isPause = False
@@ -180,10 +180,10 @@ def pause(event):
         canvas.bind("<i>", invisibleCheat)
         canvas.focus_set()
         motion()
-    elif isPause == False:
+    elif isPause is False:
         restart_btn = Button(window, text="restart", font="Bookshelf 20 bold", height=2, width=26, command=restart, anchor='c')
         restart_btn.place(x=440, y=300)
-        saveAndQuit_btn  = Button(window, text="save & quit", font="Bookshelf 20 bold", height=2, width=26, command=saveAndQuit, anchor='c')
+        saveAndQuit_btn = Button(window, text="save & quit", font="Bookshelf 20 bold", height=2, width=26, command=saveAndQuit, anchor='c')
         saveAndQuit_btn.place(x=440, y=400)
         isPause = True
         canvas.unbind("<Up>")
@@ -194,14 +194,14 @@ def pause(event):
 
 def turtleCheat(event):
     global turtlee, isTurtle, turtle
-    turtlee = canvas.create_image(990, 570, image=turtle[0], anchor = 'n')
+    turtlee = canvas.create_image(990, 570, image=turtle[0], anchor='n')
     isTurtle.append(turtlee)
     isTurtle.append(0)
 
 def bossKey(event):
     global isBoss, boss_canvas, bossImg
-    if isBoss == False:
-        boss_canvas = canvas.create_image(640, 360, image=bossImg, anchor = 'c')
+    if isBoss is False:
+        boss_canvas = canvas.create_image(640, 360, image=bossImg, anchor='c')
         isBoss = True
         canvas.unbind("<Up>")
         canvas.unbind("<Down>")
@@ -209,7 +209,7 @@ def bossKey(event):
         canvas.unbind("<space>")
         canvas.unbind("<i>")
         canvas.focus_set()
-    elif isBoss == True:
+    elif isBoss is True:
         canvas.delete(boss_canvas)
         isBoss = False
         canvas.bind("<Up>", upKey)
@@ -269,7 +269,7 @@ def reload():
         dolphin_used = dolphin2
     if dolph == 3:
         dolphin_used = dolphin3
-    dolphin = canvas.create_image(dolphX, dolphY, image=dolphin_used[0], anchor = 'e')
+    dolphin = canvas.create_image(dolphX, dolphY, image=dolphin_used[0], anchor='e')
     canvas.delete(menu)
     canvas.delete(game_text)
     start_button.destroy()
@@ -308,18 +308,18 @@ def cusToStart():
 def customise():
     global dolphins, dolphin1, dolphin2, dolphin3, game_text, start_button, customise_button, custom_canvas, dolph3_btn, dolph2_btn, dolph1_btn, cus_to_start, custom_text
     canvas.delete(game_text)
-    custom_canvas = Canvas(window, bg = "#4B0082",width = 1280, height = 720)
+    custom_canvas = Canvas(window, bg="#4B0082", width=1280, height=720)
     custom_canvas.pack()
     custom_text = canvas.create_text(640, 100, text="Choose your dolphin", font="Bookshelf 30 bold", fill="white", anchor='c')
     custom_canvas.pack()
-    dolph1_btn = Button(window, text="Gary: joyful dolphin who loves his home", font="Bookshelf 20 bold", height = 2, width = 60, command=dolph1_set, anchor='c')
+    dolph1_btn = Button(window, text="Gary: joyful dolphin who loves his home", font="Bookshelf 20 bold", height=2, width=60, command=dolph1_set, anchor='c')
     dolph1_btn.place(x=250, y=200)
-    dolph2_btn = Button(window, text="Azuki: an alien dolphin who is here to kidnap Gary", font="Bookshelf 20 bold", height = 2, width = 60, command=dolph2_set, anchor='c')
+    dolph2_btn = Button(window, text="Azuki: an alien dolphin who is here to kidnap Gary", font="Bookshelf 20 bold", height=2, width=60, command=dolph2_set, anchor='c')
     dolph2_btn.place(x=250, y=300)
-    dolph3_btn = Button(window, text="Suido: a stingray who is scared of Gary", height = 2, width = 60, font="Bookshelf 20 bold", command=dolph3_set, anchor='c')
+    dolph3_btn = Button(window, text="Suido: a stingray who is scared of Gary", height=2, width=60, font="Bookshelf 20 bold", command=dolph3_set, anchor='c')
     dolph3_btn.place(x=250, y=400)
-    cus_to_start = Button(window, text="back", height=2, width = 60, font="Bookshelf 20 bold", command=cusToStart, anchor='c')
-    cus_to_start.place(x=250,y=500)
+    cus_to_start = Button(window, text="back", height=2, width=60, font="Bookshelf 20 bold", command=cusToStart, anchor='c')
+    cus_to_start.place(x=250, y=500)
 
 def motion():
     canvas.bind("<Up>", upKey)
@@ -337,7 +337,7 @@ def motion():
     canvas.bind("<b>", bossKey)
     canvas.bind("<i>", invisibleCheat)
     canvas.focus_set()
-    while isPause == False and lives > 0 and isBoss == False and isRestart == False:
+    while isPause is False and lives > 0 and isBoss is False and isRestart is False:
         enemyNumber = 0
         if i == len(dolphins)-1:
             i = 0
@@ -351,7 +351,7 @@ def motion():
             canvas.delete(invinsibleTxt)
             dolphin_coords = canvas.coords(dolphin)
             canvas.delete(dolphin)
-            dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i], anchor = 'e')
+            dolphin = canvas.create_image(dolphin_coords[0], dolphin_coords[1], image=dolphins[i], anchor='e')
         window.update()
         sleep(0.06)
         i += 1
@@ -366,30 +366,30 @@ def motion():
             enemyX = 990
             enemyY = rand(200, 550)
             if danger[enemyNumber] == crab or danger[enemyNumber] == spikes:
-                enemy = canvas.create_image(enemyX, 590, image=danger[enemyNumber][0], anchor = 'n')
+                enemy = canvas.create_image(enemyX, 590, image=danger[enemyNumber][0], anchor='n')
                 enemies.append(enemy)
                 enemies.append(enemyNumber)
                 enemies.append(0)
             elif danger[enemyNumber] != spikes:
-                enemy = canvas.create_image(enemyX, enemyY, image=danger[enemyNumber][0], anchor = 'w')
+                enemy = canvas.create_image(enemyX, enemyY, image=danger[enemyNumber][0], anchor='w')
                 enemies.append(enemy)
                 enemies.append(enemyNumber)
                 enemies.append(0)
         if len(enemies) != 0:
-            for a in range(0,len(enemies),3):
+            for a in range(0, len(enemies), 3):
                 enemies[a+2] += 1
                 canvas.move(enemies[a], -20, 0)
                 if enemies[a+2] == len(danger[enemies[a+1]]):
                     enemies[a+2] = 0
                 enemy_coords = canvas.coords(enemies[a])
                 canvas.delete(enemies[a])
-                enemies[a] = canvas.create_image(enemy_coords[0], enemy_coords[1], image=danger[enemies[a+1]][enemies[a+2]], anchor = 'w')
+                enemies[a] = canvas.create_image(enemy_coords[0], enemy_coords[1], image=danger[enemies[a+1]][enemies[a+2]], anchor='w')
                 if enemy_coords[0] < 280:
                     canvas.delete(enemies[a])
                     del enemies[0:3]
                     a -= 3
                     break
-                if overlapping(dolphin, enemies[a]) and isInvisible == False:
+                if overlapping(dolphin, enemies[a]) and isInvisible is False:
                     lives -= 1
                     if lives == 0:
                         canvas.delete(livesDisplay)

@@ -10,3 +10,7 @@
 30,arun
 90,sarina
 60,pranav
+40,dhrishaj
+200,johnathan
+0,aku
+190,kesh
