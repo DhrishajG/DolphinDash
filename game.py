@@ -70,11 +70,12 @@ def game_over():
     menuMain()
 
 def restart():
-    global isRestart, restart_btn, t, gameOver, isPause, isBoss, isRestart, i, j, score, lives, dolphin, dolphinImg, enemies, fish_arr, isTurtle, livesDisplay, lives_arr, score_txt, score_display
+    global isRestart, restart_btn, t, gameOver, isPause, isBoss, isRestart, i, j, score, lives, dolphin, dolphinImg, enemies, fish_arr, isTurtle, livesDisplay, lives_arr, score_txt, score_display, saveAndQuit_btn
     isRestart = True
     gameOver = False
     isPause = False
     isBoss = False
+    saveAndQuit_btn.destroy()
     restart_btn.destroy()
     motion()
     isRestart = False
@@ -107,10 +108,59 @@ def restart():
     isRestart = False
     menuMain()
 
+def saveAndQuit():
+    global gameProgress, score, username, lives, dolphin, dolphins, dolphin1, dolphin2, dolphin3, saveAndQuit_btn, restart_btn, isRestart, restart_btn, t, gameOver, isPause, isBoss, isRestart, i, j, dolphinImg, enemies, fish_arr, isTurtle, gameOver_btn, gameover, livesDisplay, lives_arr, score_txt, score_display
+    which_dolphin = 0
+    if dolphins == dolphin1:
+        which_dolphin = 1
+    elif dolphins == dolphin2:
+        which_dolphin = 2
+    elif dolphins == dolphin3:
+        which_dolphin = 3
+    data = (username+"\n"+str(score)+"\n"+str(lives)+"\n"+str(which_dolphin)+"\n"+str(canvas.coords(dolphin))).split("\n")
+    for a in range(len(data)):
+        gameProgress.write(data[a]+"\n")
+    gameProgress.close()
+    saveAndQuit_btn.destroy()
+    restart_btn.destroy()
+    gameOver = False
+    isPause = False
+    isBoss = False
+    gameOver_btn.destroy()
+    isRestart = False
+    t = 0
+    i = 0
+    j = 0
+    score = 0
+    lives = 3
+    canvas.delete(score_display)
+    canvas.delete(livesDisplay)
+    score_txt = "Score:"+str(score)
+    score_display = canvas.create_text(900, 40, text=score_txt, fill="white", font=("Times New Roman", 20, "bold", "italic"))
+    livesDisplay = canvas.create_image(350, 50, image=lives_arr[3])
+    canvas.delete(dolphin)
+    dolphin = canvas.create_image(550, 360, image=dolphinImg, anchor = 'e')
+    if len(enemies) != 0:
+        for a in range(0,len(enemies),3):
+            canvas.delete(enemies[a])
+    if len(fish_arr) != 0:
+        for a in range(0, len(fish_arr)):
+            canvas.delete(fish_arr[a])
+    if len(isTurtle) != 0:
+        for a in range(0, len(isTurtle), 2):
+            canvas.delete(isTurtle[a])
+    enemies.clear()
+    fish_arr.clear()
+    isTurtle.clear()
+    canvas.pack()
+    window.update()
+    menuMain()
+
 def pause(event):
-    global isPause, restart_btn
+    global isPause, restart_btn, saveAndQuit_btn
     if isPause == True:
         restart_btn.destroy()
+        saveAndQuit_btn.destroy()
         isPause = False
         canvas.bind("<Up>", upKey)
         canvas.bind("<Down>", downKey)
@@ -121,6 +171,8 @@ def pause(event):
     elif isPause == False:
         restart_btn = Button(window, text="restart", font="Bookshelf 20 bold", height=2, width=26, command=restart, anchor='c')
         restart_btn.place(x=440, y=300)
+        saveAndQuit_btn  = Button(window, text="save & quit", font="Bookshelf 20 bold", height=2, width=26, command=saveAndQuit, anchor='c')
+        saveAndQuit_btn.place(x=440, y=400)
         isPause = True
         canvas.unbind("<Up>")
         canvas.unbind("<Down>")
@@ -175,7 +227,8 @@ def getUsername():
     submit_btn.place(x=440, y=400)
 
 def startGame():
-    global start_button, game_text, menu, customise_button, username_textbox, submit_btn
+    global start_button, game_text, menu, customise_button, username_textbox, submit_btn, username, gameProgress
+    gameProgress = open("db/progress.txt", "w")
     username = username_textbox.get('1.0', 'end-1c')
     username_textbox.destroy()
     submit_btn.destroy()
@@ -533,6 +586,8 @@ j = 0
 score = 0
 lives = 3
 
+gameProgress = open("db/progress.txt", "w")
+
 username = ""
 username_textbox = Text(window, height=2, width=26, font="Bookshelf 20 bold")
 submit_btn = Button(window, height=2, width=26, text="start!", command=startGame)
@@ -557,6 +612,7 @@ gameoverImg = PhotoImage(file="images/gameover.png")
 gameover = canvas.create_image(640, 300, image=gameoverImg, anchor='c')
 canvas.delete(gameover)
 gameOver_btn = Button(window, text="restart", font="Bookshelf 20 bold", height=2, width=26, command=game_over, anchor='c')
+saveAndQuit_btn  = Button(window, text="save & quit", font="Bookshelf 20 bold", height=2, width=26, command=saveAndQuit, anchor='c')
 
 menuMain()
 
