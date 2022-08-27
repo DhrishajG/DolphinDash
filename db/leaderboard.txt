@@ -1,0 +1,16 @@
+
+90,dhrishaj
+20,yuna
+20,yasmin
+30,miki
+120,dhruv
+50,aaron
+30,frenciel
+170,frenciel
+30,arun
+90,sarina
+60,pranav
+40,dhrishaj
+200,johnathan
+0,aku
+190,kesh
