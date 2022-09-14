@@ -1,3 +1,3 @@
-# 16321_Python_Coursework
+# Python Game - Dolphin Dash (Tkinter)
 
-This is the repository for the Python Coursework named: 16321-Cwk-S-Python Coursework
+Created a playable dolphin that needs to dodge animated sharks, whales and jellyfish and eat the animated fish. To complete user experience made option to pause/unpause game, save progress, restart game and store user’s score to display in a leader board. There are two cheat codes, try to find them out :)
